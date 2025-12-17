@@ -19,7 +19,7 @@ Perfect for healthcare analytics, competitive research, medical directories, and
 ## Key Features
 
 <ul>
-  <li>✅ <strong>Smart Data Extraction</strong> - Prioritizes JSON API for speed, falls back to HTML parsing for reliability</li>
+  <li>✅ <strong>Smart Data Extraction</strong> - Prioritizes JSON-LD (structured data) for speed & stability, falls back to HTML parsing for reliability</li>
   <li>✅ <strong>Comprehensive Profiles</strong> - Captures doctor name, specialty, qualifications, experience, ratings, reviews, fees</li>
   <li>✅ <strong>Multi-City Support</strong> - Scrape doctors from Lahore, Karachi, Islamabad, Rawalpindi, and more</li>
   <li>✅ <strong>Flexible Filtering</strong> - Search by specialty (dermatologist, cardiologist, pediatrician, etc.)</li>
@@ -121,6 +121,20 @@ The scraper accepts the following input parameters:
       <td>No</td>
       <td>Maximum listing pages to scrape</td>
       <td><code>10</code> (default)</td>
+    </tr>
+    <tr>
+      <td><code>maxConcurrency</code></td>
+      <td>Integer</td>
+      <td>No</td>
+      <td>Maximum parallel requests (higher is faster but can increase blocking risk)</td>
+      <td><code>8</code> (default)</td>
+    </tr>
+    <tr>
+      <td><code>maxRequestsPerMinute</code></td>
+      <td>Integer</td>
+      <td>No</td>
+      <td>Rate limit across all requests (lower is stealthier, higher is faster)</td>
+      <td><code>90</code> (default)</td>
     </tr>
     <tr>
       <td><code>proxyConfiguration</code></td>
@@ -314,15 +328,15 @@ curl "https://api.apify.com/v2/acts/YOUR_USERNAME~oladoc-doctors-scraper/runs" \
   </tr>
   <tr>
     <td><strong>Accuracy</strong></td>
-    <td>99%+ with dual extraction method (JSON + HTML fallback)</td>
+    <td>99%+ with dual extraction method (JSON-LD + HTML fallback)</td>
   </tr>
   <tr>
     <td><strong>Concurrency</strong></td>
-    <td>5 concurrent requests (optimized for stability)</td>
+    <td>Configurable (default: 8 concurrent requests)</td>
   </tr>
   <tr>
     <td><strong>Retry Logic</strong></td>
-    <td>3 automatic retries on failure</td>
+    <td>Up to 5 automatic retries on failure</td>
   </tr>
   <tr>
     <td><strong>Data Freshness</strong></td>
@@ -462,7 +476,7 @@ This actor runs on the Apify platform with usage-based pricing:
 <table>
   <tr>
     <td><strong>Extraction Method</strong></td>
-    <td>JSON API (priority) + HTML parsing (fallback)</td>
+    <td>JSON-LD (priority) + HTML parsing (fallback)</td>
   </tr>
   <tr>
     <td><strong>JavaScript Runtime</strong></td>
@@ -487,7 +501,7 @@ This actor runs on the Apify platform with usage-based pricing:
 ## Updates & Changelog
 
 <ul>
-  <li><strong>v1.0.0</strong> - Initial release with JSON API priority and comprehensive profile extraction</li>
+  <li><strong>v1.0.0</strong> - Initial release with JSON-LD priority and comprehensive profile extraction</li>
 </ul>
 
 ---

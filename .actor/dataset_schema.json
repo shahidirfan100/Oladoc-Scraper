@@ -1,0 +1,68 @@
+{
+  "actorSpecification": 1,
+  "fields": {},
+  "views": {
+    "overview": {
+      "title": "Overview",
+      "transformation": {
+        "fields": [
+          "name",
+          "specialty",
+          "qualifications",
+          "experience",
+          "rating",
+          "reviews_count",
+          "consultation_fee",
+          "availability",
+          "city",
+          "url"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "name": {
+            "label": "Doctor Name",
+            "format": "text"
+          },
+          "specialty": {
+            "label": "Specialty",
+            "format": "text"
+          },
+          "qualifications": {
+            "label": "Qualifications",
+            "format": "text"
+          },
+          "experience": {
+            "label": "Experience",
+            "format": "text"
+          },
+          "rating": {
+            "label": "Rating",
+            "format": "text"
+          },
+          "reviews_count": {
+            "label": "Reviews",
+            "format": "number"
+          },
+          "consultation_fee": {
+            "label": "Fee",
+            "format": "text"
+          },
+          "availability": {
+            "label": "Availability",
+            "format": "text"
+          },
+          "city": {
+            "label": "City",
+            "format": "text"
+          },
+          "url": {
+            "label": "Profile URL",
+            "format": "link"
+          }
+        }
+      }
+    }
+  }
+}

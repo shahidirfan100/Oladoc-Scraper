@@ -1,0 +1,70 @@
+{
+  "title": "Oladoc Doctors Scraper",
+  "description": "Extract doctor profiles from Oladoc.com. Scrape by specialty, city, and get comprehensive doctor information including ratings, experience, fees, and availability.",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "startUrl": {
+      "title": "Start URL",
+      "type": "string",
+      "description": "Optional: Start from a specific Oladoc URL (e.g., https://oladoc.com/pakistan/lahore/dermatologist). If provided, specialty/city/country are ignored.",
+      "editor": "textfield"
+    },
+    "specialty": {
+      "title": "Specialty",
+      "type": "string",
+      "description": "Doctor specialty to search for (e.g., 'dermatologist', 'cardiologist', 'pediatrician').",
+      "editor": "textfield",
+      "prefill": "dermatologist"
+    },
+    "city": {
+      "title": "City",
+      "type": "string",
+      "description": "City to search in (e.g., 'lahore', 'karachi', 'islamabad').",
+      "editor": "textfield",
+      "prefill": "lahore"
+    },
+    "country": {
+      "title": "Country",
+      "type": "string",
+      "description": "Country code (default: 'pakistan').",
+      "editor": "textfield",
+      "default": "pakistan"
+    },
+    "collectDetails": {
+      "title": "Collect detailed profiles",
+      "type": "boolean",
+      "description": "Visit each doctor's profile page to extract full details including qualifications, experience, and services.",
+      "editor": "checkbox",
+      "default": true
+    },
+    "results_wanted": {
+      "title": "Maximum number of doctors",
+      "type": "integer",
+      "description": "Maximum number of doctor profiles to collect.",
+      "minimum": 1,
+      "default": 50,
+      "editor": "number"
+    },
+    "max_pages": {
+      "title": "Maximum pages",
+      "type": "integer",
+      "description": "Maximum number of listing pages to scrape.",
+      "minimum": 1,
+      "editor": "number",
+      "default": 10
+    },
+    "proxyConfiguration": {
+      "title": "Proxy configuration",
+      "type": "object",
+      "description": "Proxy settings. Residential proxies recommended for Oladoc.",
+      "editor": "proxy",
+      "default": {
+        "useApifyProxy": true,
+        "apifyProxyGroups": ["RESIDENTIAL"]
+      }
+    }
+  },
+  "required": [],
+  "additionalProperties": false
+}

@@ -39,6 +39,14 @@ function parseIntOrNull(text) {
     return match ? Number.parseInt(match[1], 10) : null;
 }
 
+function parseReviewsCountFromText(text) {
+    const match = String(text || '').match(/(\d[\d,]*)\s*reviews?\b/i);
+    if (!match) return null;
+    const normalized = match[1].replace(/,/g, '');
+    const parsed = Number.parseInt(normalized, 10);
+    return Number.isFinite(parsed) ? parsed : null;
+}
+
 function parseDoctorIdFromUrl(url) {
     const match = String(url || '').match(/\/(\d+)(?:[/?#]|$)/);
     return match ? match[1] : null;
@@ -158,13 +166,44 @@ function extractDoctorProfile($, url, defaultCity) {
 
     data.name ||= cleanText($('h1').first().text());
     data.specialty ||= cleanText(
-        $('[class*="specialty" i],[class*="specialization" i]').first().text() || $('[data-testid*="specialty" i]').first().text(),
+        // Oladoc detail pages
+        $('h2.mb-1.doc-profile-specialization.text-dark-muted').first().text()
+        // Generic fallback
+        || $('[class*="specialty" i],[class*="specialization" i]').first().text()
+        || $('[data-testid*="specialty" i]').first().text(),
     );
+
+    // Rating + review count (only the number, never the review texts)
+    const reviewAnchors = $('a.review-wrapper');
+    if (reviewAnchors.length > 0) {
+        let ratingFromAnchor = null;
+        let reviewCountFromAnchor = null;
+
+        reviewAnchors.each((_, el) => {
+            const anchor = $(el);
+            const anchorText = cleanText(anchor.text());
+            const looksLikeReviews = anchorText.toLowerCase().includes('review');
+            if (!looksLikeReviews) return;
+
+            ratingFromAnchor ||= parseFirstNumber(anchor.find('.review-with-icon').first().text()) ?? parseFirstNumber(anchorText);
+            reviewCountFromAnchor ||= parseIntOrNull(anchor.find('span.d-inline-block.text-muted').first().text())
+                ?? parseReviewsCountFromText(anchorText);
+        });
+
+        data.rating = data.rating ?? ratingFromAnchor;
+        data.reviews_count = data.reviews_count ?? reviewCountFromAnchor;
+    }
 
     data.rating = data.rating ?? parseFirstNumber($('[class*="rating" i]').first().text());
     data.reviews_count = data.reviews_count ?? parseIntOrNull($('[class*="review" i]').first().text());
 
-    data.qualifications = cleanText(
+    // Qualifications (Oladoc specific selector provided by you)
+    data.qualifications ||= cleanText(
+        $('h2.m-0.text-truncate.text-dark-muted.doc-profile-specialization').first().text(),
+    );
+
+    // Generic qualifications fallback
+    data.qualifications ||= cleanText(
         $('[class*="qualification" i],[class*="degree" i]')
             .map((_, el) => cleanText($(el).text()))
             .get()
@@ -173,11 +212,23 @@ function extractDoctorProfile($, url, defaultCity) {
             .join(', '),
     );
 
-    data.experience = cleanText($('[class*="experience" i]').first().text());
+    // Experience (Oladoc uses `div.item.review-wrapper` blocks)
+    let experience = '';
+    $('div.item.review-wrapper').each((_, el) => {
+        const item = $(el);
+        const label = cleanText(item.find('.muted-text-below, span.text-light-muted').last().text()).toLowerCase();
+        if (!label.includes('experience')) return;
+        experience ||= cleanText(item.find('span.font-weight-medium').first().text()) || cleanText(item.text());
+    });
+    data.experience = cleanText(experience) || cleanText($('[class*="experience" i]').first().text());
+
     data.wait_time = cleanText($('[class*="wait" i]').first().text());
     data.availability = cleanText($('[class*="available" i],[class*="availability" i]').first().text());
 
     data.pmdc_verified = $('[class*="pmdc" i],[class*="verified" i]').length > 0;
+
+    // Description (Oladoc selector provided by you)
+    data.description ||= cleanText($('div.line-height-1-8 p').first().text()) || cleanText($('div.line-height-1-8').first().text());
 
     data.services = $('[class*="service" i],[class*="treatment" i]')
         .map((_, el) => cleanText($(el).text()))

@@ -274,12 +274,12 @@ async function main() {
             uniqueDoctorIds: new Set(),
         };
 
-        const addRequest = async ({ url, userData, uniqueKey }) => {
+        const addRequest = async ({ url, userData, uniqueKey, headers }) => {
             await requestQueue.addRequest({
                 url,
                 uniqueKey,
                 userData,
-                headers: DEFAULT_HEADERS,
+                headers: { ...DEFAULT_HEADERS, ...(headers || {}) },
             });
         };
 
@@ -292,7 +292,6 @@ async function main() {
         const crawler = new CheerioCrawler({
             requestQueue,
             proxyConfiguration: proxyConf,
-            requestAsBrowser: true,
             useSessionPool: true,
             persistCookiesPerSession: true,
             maxRequestRetries: 5,
